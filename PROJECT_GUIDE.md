@@ -179,7 +179,7 @@ Movie ─── N:N ──→ Actor      (qua bảng movie_actors)
 Movie ─── 1:N ──→ Showtime   (1 phim có nhiều suất chiếu)
 Movie ─── 1:N ──→ MovieReview
 
-Cinema ─── 1:N ──→ Room      (1 rạp có nhiều phòng)
+Cinema ─── 1:N ──→ Room      (1 rạp cố định có nhiều phòng)
 Room   ─── 1:N ──→ Seat      (1 phòng có nhiều ghế)
 Room   ─── 1:N ──→ Showtime
 
@@ -191,6 +191,8 @@ Booking ─── 1:1 ──→ Payment        (1 đơn có 1 kết quả TT)
 
 Promotion ─── 1:N ──→ Voucher      (1 KM có nhiều mã)
 ```
+
+> ⚠️ **Lưu ý thiết kế**: Hệ thống chỉ quản lý **1 rạp duy nhất** (id=1). `Cinema` model vẫn tồn tại trong DB nhưng không có CRUD nhiều rạp. Admin chỉ quản lý **phòng chiếu** bên trong rạp đó.
 
 ---
 
@@ -303,8 +305,8 @@ Ví dụ:
 - `Actor.js` — Diễn viên
 - `MovieMeta.js` — 2 bảng junction: `movie_genres` và `movie_actors` (quan hệ N-N)
 - `MovieReview.js` — Đánh giá phim của khách hàng (rating 1-10 + bình luận)
-- `Cinema.js` — Rạp chiếu phim (địa chỉ, thành phố...)
-- `Room.js` — Phòng chiếu trong rạp (Standard/IMAX/4DX...)
+- `Cinema.js` — Rạp chiếu phim (chỉ 1 bản ghi id=1, không CRUD)
+- `Room.js` — Phòng chiếu trong rạp (Standard/IMAX...) — Admin quản lý
 - `Combo.js` — Bắp nước combo
 - `Promotion.js` — Chương trình khuyến mãi
 - `Voucher.js` — Mã giảm giá cụ thể (liên kết với Promotion)
@@ -336,11 +338,11 @@ Ví dụ: Request `GET /api/v1/movies` sẽ đi vào `movie.routes.js`
 ### `routes/movie.routes.js` - Phim (Public)
 | URL | Method | Ý nghĩa |
 |-----|--------|---------|
-| `/movies` | GET | Danh sách phim, filter được theo status/genre/search |
+| `/movies` | GET | Danh sách phim, filter theo `status` / `genre_id` / `search` / `page` / `limit` |
 | `/movies/now-showing` | GET | Phim đang chiếu |
 | `/movies/coming-soon` | GET | Phim sắp chiếu |
-| `/movies/:id` | GET | Chi tiết 1 phim |
-| `/movies/:id/showtimes` | GET | Lịch chiếu của phim (filter theo ngày, thành phố) |
+| `/movies/:id` | GET | Chi tiết 1 phim (kèm đạo diễn, thể loại, diễn viên) |
+| `/movies/:id/showtimes` | GET | Lịch chiếu của phim — filter theo `?date=YYYY-MM-DD` |
 | `/movies/:id/reviews` | GET | Danh sách đánh giá |
 | `/movies/:id/reviews` | POST | Thêm đánh giá (cần đăng nhập) |
 
@@ -349,9 +351,9 @@ Ví dụ: Request `GET /api/v1/movies` sẽ đi vào `movie.routes.js`
 ### `routes/showtime.routes.js` - Suất chiếu
 | URL | Method | Ý nghĩa |
 |-----|--------|---------|
-| `/showtimes` | GET | Danh sách suất chiếu (filter) |
+| `/showtimes` | GET | Danh sách suất chiếu — filter: `?movie_id` / `?room_id` / `?date=YYYY-MM-DD` |
 | `/showtimes/:id` | GET | Chi tiết 1 suất chiếu |
-| `/showtimes/:id/seats` | GET | **Sơ đồ ghế real-time** — trạng thái từng ghế |
+| `/showtimes/:id/seats` | GET | **Sơ đồ ghế real-time** — trạng thái từng ghế (available/held/booked) |
 
 ---
 
@@ -379,19 +381,41 @@ Ví dụ: Request `GET /api/v1/movies` sẽ đi vào `movie.routes.js`
 ### `routes/admin.routes.js` - Quản trị (Cần đăng nhập + role Admin)
 Tất cả URL dạng `/admin/...` — bảo vệ bởi `authenticate + authorize('admin')`.
 
-**Movies**: CRUD quản lý phim, upload poster/backdrop
+**Movies** — CRUD quản lý phim, upload poster/backdrop:
+```
+GET    /admin/movies
+GET    /admin/movies/:id
+POST   /admin/movies          (form-data: title, duration, poster, backdrop...)
+PUT    /admin/movies/:id
+DELETE /admin/movies/:id
+```
 
-**Cinemas & Rooms**: CRUD rạp, phòng chiếu, tạo tự động ma trận ghế
+**Rooms & Seats** — Chỉ quản lý phòng (không CRUD rạp vì chỉ có 1 rạp):
+```
+GET    /admin/rooms                      → Danh sách phòng
+POST   /admin/rooms                      → Thêm phòng mới
+PUT    /admin/rooms/:id                  → Sửa phòng
+DELETE /admin/rooms/:id                  → Xóa phòng (soft)
+GET    /admin/rooms/:id/seats            → Xem ghế của phòng
+POST   /admin/rooms/:id/seats/generate   → Tạo tự động ma trận ghế
+```
 
-**Showtimes**: Tạo lịch chiếu (có kiểm tra trùng giờ)
+**Showtimes** — Tạo lịch chiếu (có kiểm tra trùng giờ cùng phòng):
+```
+GET    /admin/showtimes
+POST   /admin/showtimes
+PUT    /admin/showtimes/:id
+DELETE /admin/showtimes/:id
+```
 
-**Users**: Xem danh sách, khóa/mở tài khoản, đổi role
+**Users** — Quản lý tài khoản:
+```
+GET  /admin/users
+PUT  /admin/users/:id/toggle    → Khóa/Mở tài khoản
+PUT  /admin/users/:id/role      → Đổi role
+```
 
-**Combos**: CRUD combo bắp nước
-
-**Promotions**: CRUD khuyến mãi, tạo hàng loạt voucher
-
-**Dashboard**: Thống kê tổng quan, doanh thu theo ngày
+**Combos**, **Promotions**, **Dashboard**: CRUD bình thường.
 
 ---
 
@@ -435,7 +459,23 @@ Tất cả URL dạng `/admin/...` — bảo vệ bởi `authenticate + authoriz
 
 ---
 
-### `controllers/admin/` - Các admin controller
+### `controllers/cinema.controller.js` - Public cinema
+| Hàm | URL | Làm gì |
+|-----|-----|-------|
+| `getInfo(req, res)` | `GET /cinemas/info` | Thông tin rạp duy nhất (id=1) |
+| `getRooms(req, res)` | `GET /cinemas/rooms` | Danh sách phòng của rạp |
+
+### `controllers/admin/adminCinema.controller.js` - Admin quản lý phòng
+| Hàm | URL | Làm gì |
+|-----|-----|-------|
+| `getRooms` | `GET /admin/rooms` | Danh sách phòng |
+| `createRoom` | `POST /admin/rooms` | Thêm phòng (cinema_id tự gán = 1) |
+| `updateRoom` | `PUT /admin/rooms/:id` | Sửa thông tin phòng |
+| `removeRoom` | `DELETE /admin/rooms/:id` | Xóa phòng (soft delete) |
+| `getSeats` | `GET /admin/rooms/:id/seats` | Xem tất cả ghế của phòng |
+| `generateSeats` | `POST /admin/rooms/:id/seats/generate` | Tạo tự động ma trận ghế |
+
+### `controllers/admin/` - Các admin controller khác
 Tương tự pattern trên nhưng cho Admin. Mỗi action thêm việc upload ảnh qua Cloudinary.
 
 ---
@@ -502,12 +542,12 @@ Tìm phim theo id, include đầy đủ:
 - Actors (diễn viên, kèm tên nhân vật + thứ tự)
 ```
 
-**`getShowtimes(movieId, { date, city })`**
+**`getShowtimes(movieId, { date })`**
 ```
 Lấy tất cả suất chiếu của phim:
 - Filter theo ngày cụ thể (query 0h-24h của ngày đó)
-- Filter theo thành phố rạp
-Include: Room → Cinema
+- Không filter theo thành phố/rạp vì hệ thống chỉ có 1 rạp
+Include: Room (tên phòng, loại phòng)
 ```
 
 **`addReview(movieId, userId, { rating, comment })`**
@@ -647,19 +687,36 @@ Tạo hàng loạt voucher cho 1 promotion:
 
 ---
 
-### `services/cinema.service.js` - Rạp chiếu
+### `services/cinema.service.js` - Rạp & Phòng (1 rạp cố định)
 
-**`generateSeats(roomId, { default_type_id, vip_rows, vip_type_id })`**
+> Hằng số `CINEMA_ID = 1` được cố định trong service — mọi thao tác đều gắn với rạp này.
+
+**`getInfo()`** — Lấy thông tin rạp (id=1)
+
+**`getRooms()`** — Danh sách phòng đang active của rạp
+
+**`createRoom(payload)`** — Tạo phòng mới, tự gán `cinema_id = 1`
+
+**`updateRoom(roomId, payload)`** — Cập nhật phòng (chỉ phòng thuộc rạp id=1)
+
+**`removeRoom(roomId)`** — Soft delete phòng (`is_active = false`)
+
+**`generateSeats(roomId, config)`**
 ```
 Tự động tạo ma trận ghế từ cấu hình phòng:
-1. Lấy Room (có total_rows, total_cols)
-2. Xóa ghế cũ nếu có
-3. Tạo vòng lặp: rows = [A, B, C...], cols = [1, 2, 3...]
-4. Với mỗi ghế, quyết định loại:
-   - Nếu hàng thuộc vip_rows → gán seat_type VIP
-   - Nếu cột thuộc couple_cols → gán seat_type Couple
-   - Còn lại → loại mặc định
-5. bulkCreate() tất cả cùng lúc
+1. Lấy Room (có total_rows, total_cols) — kiểm tra thuộc rạp id=1
+2. Xóa ghế cũ (Seat.destroy)
+3. Tạo nhãn hàng: A=65, B=66... theo ASCII (total_rows hàng)
+4. Với mỗi ô (hàng × cột), quyết định loại ghế:
+   - Hàng thuộc vip_rows (vd: ['G','H']) → seat_type = VIP
+   - Cột thuộc couple_cols (vd: [11, 12]) → seat_type = Couple
+   - Còn lại → seat_type mặc định (Thường)
+5. bulkCreate() tất cả cùng lúc → hiệu quả hơn insert từng cái
+
+Ví dụ phòng 8 hàng × 12 cột:
+- vip_rows: ['G','H'] → 24 ghế VIP
+- couple_cols: [11,12] → 16 ghế Couple
+- Còn lại: 96 - 24 - 16 = 56 ghế Thường
 ```
 
 ---

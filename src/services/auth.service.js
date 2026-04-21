@@ -8,12 +8,19 @@ const transporter = require('../config/mailer');
 const crypto = require('crypto');
 
 const AuthService = {
-  async register({ full_name, email, password }) {
+  async register({ full_name, email, password, phone, date_of_birth, gender }) {
     const existing = await User.scope('withPassword').findOne({ where: { email } });
     if (existing) throw new AppError('Email đã được sử dụng', 409);
 
     const password_hash = await bcrypt.hash(password, 12);
-    const user = await User.create({ full_name, email, password_hash });
+    const user = await User.create({
+      full_name,
+      email,
+      password_hash,
+      phone: phone || null,
+      date_of_birth: date_of_birth || null,
+      gender: gender || null,
+    });
 
     const accessToken = generateAccessToken({ id: user.id, role: user.role });
     const refreshToken = generateRefreshToken({ id: user.id });
@@ -21,6 +28,7 @@ const AuthService = {
 
     return { user: sanitizeUser(user), accessToken, refreshToken };
   },
+
 
   async login({ email, password }) {
     const user = await User.scope('withPassword').findOne({ where: { email } });

@@ -16,10 +16,12 @@ const UserService = {
     return User.findAndCountAll({ where, limit, offset, order: [['created_at', 'DESC']] });
   },
 
-  async updateProfile(userId, { full_name, phone }) {
+  async updateProfile(userId, { full_name, phone, date_of_birth, gender }) {
     const user = await User.findByPk(userId);
-    return user.update({ full_name, phone });
+    if (!user) throw new AppError('Không tìm thấy người dùng', 404);
+    return user.update({ full_name, phone, date_of_birth, gender });
   },
+
 
   async updateAvatar(userId, avatarUrl) {
     const user = await User.findByPk(userId);

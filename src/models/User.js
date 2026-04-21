@@ -8,7 +8,12 @@ const User = sequelize.define('User', {
   full_name: { type: DataTypes.STRING(100), allowNull: false },
   email: { type: DataTypes.STRING(150), allowNull: false, unique: true },
   password_hash: { type: DataTypes.STRING(255), allowNull: true }, // null nếu đăng nhập OAuth
-  phone: { type: DataTypes.STRING(20) },
+  phone: { type: DataTypes.STRING(20), allowNull: true },
+  date_of_birth: { type: DataTypes.DATEONLY, allowNull: true },          // VD: '2000-05-15'
+  gender: {                                                               // Nam / Nữ / Khác
+    type: DataTypes.ENUM('male', 'female', 'other'),
+    allowNull: true,
+  },
   avatar_url: { type: DataTypes.STRING(500) },
   role: {
     type: DataTypes.ENUM('admin', 'customer'),
