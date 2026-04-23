@@ -22,6 +22,14 @@ const AdminMovieController = {
   async create(req, res, next) {
     try {
       const payload = { ...req.body };
+      
+      // Parse genre_ids if it's from form-data (stringified array)
+      if (typeof payload.genre_ids === 'string') {
+        try {
+          payload.genre_ids = JSON.parse(payload.genre_ids);
+        } catch (e) {}
+      }
+
       if (req.files?.poster?.[0]) {
         const r = await uploadToCloudinary(req.files.poster[0].buffer, 'movies/posters');
         payload.poster_url = r.secure_url;
@@ -37,6 +45,14 @@ const AdminMovieController = {
   async update(req, res, next) {
     try {
       const payload = { ...req.body };
+      
+      // Parse genre_ids if it's from form-data (stringified array)
+      if (typeof payload.genre_ids === 'string') {
+        try {
+          payload.genre_ids = JSON.parse(payload.genre_ids);
+        } catch (e) {}
+      }
+
       if (req.files?.poster?.[0]) {
         const r = await uploadToCloudinary(req.files.poster[0].buffer, 'movies/posters');
         payload.poster_url = r.secure_url;

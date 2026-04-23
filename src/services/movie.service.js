@@ -98,13 +98,28 @@ const MovieService = {
   },
 
   async create(payload) {
-    return Movie.create(payload);
+    const { genre_ids, ...movieData } = payload;
+    const movie = await Movie.create(movieData);
+    
+    if (genre_ids && Array.isArray(genre_ids) && genre_ids.length > 0) {
+      await movie.setGenres(genre_ids);
+    }
+    
+    return movie;
   },
 
   async update(id, payload) {
     const movie = await Movie.findByPk(id);
     if (!movie) throw new AppError('Không tìm thấy phim', 404);
-    return movie.update(payload);
+    
+    const { genre_ids, ...movieData } = payload;
+    await movie.update(movieData);
+    
+    if (genre_ids && Array.isArray(genre_ids)) {
+      await movie.setGenres(genre_ids);
+    }
+    
+    return movie;
   },
 
   async remove(id) {

@@ -8,6 +8,8 @@ const base = `/${API_VERSION}`;
 router.use(`${base}/auth`,       require('./auth.routes'));
 router.use(`${base}/movies`,     require('./movie.routes'));
 router.use(`${base}/genres`,     require('./genre.routes'));
+router.use(`${base}/directors`,  require('./director.routes'));
+router.use(`${base}/actors`,     require('./actor.routes'));
 router.use(`${base}/cinemas`,    require('./cinema.routes'));
 router.use(`${base}/showtimes`,  require('./showtime.routes'));
 router.use(`${base}/bookings`,   require('./booking.routes'));

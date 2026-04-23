@@ -15,6 +15,20 @@ router.post('/movies',             upload.fields([{ name: 'poster', maxCount: 1 
 router.put('/movies/:id',          upload.fields([{ name: 'poster', maxCount: 1 }, { name: 'backdrop', maxCount: 1 }]), AdminMovieController.update);
 router.delete('/movies/:id',       AdminMovieController.remove);
 
+// Directors
+const AdminDirectorController = require('../controllers/admin/adminDirector.controller');
+router.get('/directors',           AdminDirectorController.getAll);
+router.post('/directors',          upload.single('avatar'), AdminDirectorController.create);
+router.put('/directors/:id',       upload.single('avatar'), AdminDirectorController.update);
+router.delete('/directors/:id',    AdminDirectorController.remove);
+
+// Actors
+const AdminActorController = require('../controllers/admin/adminActor.controller');
+router.get('/actors',           AdminActorController.getAll);
+router.post('/actors',          upload.single('avatar'), AdminActorController.create);
+router.put('/actors/:id',       upload.single('avatar'), AdminActorController.update);
+router.delete('/actors/:id',    AdminActorController.remove);
+
 // Rooms (1 rạp duy nhất — chỉ quản lý phòng)
 const AdminCinemaController = require('../controllers/admin/adminCinema.controller');
 router.get('/rooms',                        AdminCinemaController.getRooms);           // Danh sách phòng
