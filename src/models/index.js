@@ -32,7 +32,7 @@ MembershipTier.hasMany(User, { foreignKey: 'membership_tier_id' });
 User.belongsTo(MembershipTier, { foreignKey: 'membership_tier_id', as: 'membershipTier' });
 
 // ── Movie Catalog ──────────────────────────────────────────
-Director.hasMany(Movie, { foreignKey: 'director_id' });
+Director.hasMany(Movie, { foreignKey: 'director_id', as: 'movies' });
 Movie.belongsTo(Director, { foreignKey: 'director_id', as: 'director' });
 
 Movie.belongsToMany(Genre, { through: MovieGenre, foreignKey: 'movie_id', as: 'genres' });
