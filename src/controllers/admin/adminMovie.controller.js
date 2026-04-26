@@ -25,9 +25,10 @@ const AdminMovieController = {
       
       // Parse genre_ids if it's from form-data (stringified array)
       if (typeof payload.genre_ids === 'string') {
-        try {
-          payload.genre_ids = JSON.parse(payload.genre_ids);
-        } catch (e) {}
+        try { payload.genre_ids = JSON.parse(payload.genre_ids); } catch (e) {}
+      }
+      if (typeof payload.actor_ids === 'string') {
+        try { payload.actor_ids = JSON.parse(payload.actor_ids); } catch (e) {}
       }
 
       if (req.files?.poster?.[0]) {
@@ -48,9 +49,10 @@ const AdminMovieController = {
       
       // Parse genre_ids if it's from form-data (stringified array)
       if (typeof payload.genre_ids === 'string') {
-        try {
-          payload.genre_ids = JSON.parse(payload.genre_ids);
-        } catch (e) {}
+        try { payload.genre_ids = JSON.parse(payload.genre_ids); } catch (e) {}
+      }
+      if (typeof payload.actor_ids === 'string') {
+        try { payload.actor_ids = JSON.parse(payload.actor_ids); } catch (e) {}
       }
 
       if (req.files?.poster?.[0]) {

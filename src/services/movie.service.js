@@ -2,7 +2,9 @@
 
 const { Op } = require('sequelize');
 const { Movie, Director, Genre, Actor, Showtime, MovieReview, User, Cinema, Room } = require('../models');
+const { sequelize } = require('../config/database');
 const AppError = require('../utils/AppError');
+const { generateSlug } = require('../utils/helpers.util');
 
 const MovieService = {
   async getAll({ status, genre_id, search, page = 1, limit = 10, offset = 0 }) {
@@ -13,6 +15,7 @@ const MovieService = {
     const include = [
       { model: Director, as: 'director', attributes: ['id', 'name'] },
       { model: Genre, as: 'genres', attributes: ['id', 'name', 'slug'], through: { attributes: [] } },
+      { model: Actor, as: 'actors', attributes: ['id', 'name'], through: { attributes: ['character_name'] } },
     ];
     if (genre_id) {
       include.find(i => i.as === 'genres').where = { id: genre_id };
@@ -28,6 +31,7 @@ const MovieService = {
       include: [
         { model: Director, as: 'director', attributes: ['id', 'name'] },
         { model: Genre, as: 'genres', attributes: ['id', 'name'], through: { attributes: [] } },
+        { model: Actor, as: 'actors', attributes: ['id', 'name'], through: { attributes: ['character_name'] } },
       ],
       limit,
       offset,
@@ -98,28 +102,62 @@ const MovieService = {
   },
 
   async create(payload) {
-    const { genre_ids, ...movieData } = payload;
-    const movie = await Movie.create(movieData);
-    
-    if (genre_ids && Array.isArray(genre_ids) && genre_ids.length > 0) {
-      await movie.setGenres(genre_ids);
+    const { genre_ids, actor_ids, ...movieData } = payload;
+
+    // Tự động tạo slug nếu rỗng
+    if (!movieData.slug && movieData.title) {
+      movieData.slug = generateSlug(movieData.title) + '-' + Date.now().toString().slice(-4);
     }
+
+    const transaction = await sequelize.transaction();
     
-    return movie;
+    try {
+      const movie = await Movie.create(movieData, { transaction });
+      
+      if (genre_ids && Array.isArray(genre_ids) && genre_ids.length > 0) {
+        await movie.setGenres(genre_ids, { transaction });
+      }
+      if (actor_ids && Array.isArray(actor_ids) && actor_ids.length > 0) {
+        await movie.setActors(actor_ids, { transaction });
+      }
+      
+      await transaction.commit();
+      return this.getById(movie.id);
+    } catch (error) {
+      await transaction.rollback();
+      throw error;
+    }
   },
 
   async update(id, payload) {
     const movie = await Movie.findByPk(id);
     if (!movie) throw new AppError('Không tìm thấy phim', 404);
+
+    const { genre_ids, actor_ids, ...movieData } = payload;
     
-    const { genre_ids, ...movieData } = payload;
-    await movie.update(movieData);
-    
-    if (genre_ids && Array.isArray(genre_ids)) {
-      await movie.setGenres(genre_ids);
+    // Tự động tạo lại slug nếu có truyền title mới và title khác title cũ
+    if (!movieData.slug && movieData.title && movieData.title !== movie.title) {
+      movieData.slug = generateSlug(movieData.title) + '-' + Date.now().toString().slice(-4);
     }
+
+    const transaction = await sequelize.transaction();
     
-    return movie;
+    try {
+      await movie.update(movieData, { transaction });
+      
+      if (genre_ids && Array.isArray(genre_ids)) {
+        await movie.setGenres(genre_ids, { transaction });
+      }
+      if (actor_ids && Array.isArray(actor_ids)) {
+        await movie.setActors(actor_ids, { transaction });
+      }
+      
+      await transaction.commit();
+      return this.getById(movie.id);
+    } catch (error) {
+      await transaction.rollback();
+      throw error;
+    }
   },
 
   async remove(id) {

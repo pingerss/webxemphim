@@ -36,4 +36,24 @@ function parsePagination(query) {
   return { page, limit, offset };
 }
 
-module.exports = { generateBookingCode, seatLockKey, bookingHoldKey, parsePagination };
+/**
+ * Tạo slug chuẩn từ chuỗi (hỗ trợ tiếng Việt)
+ */
+function generateSlug(str) {
+  if (!str) return '';
+  let slug = str.toLowerCase();
+  slug = slug.replace(/á|à|ả|ạ|ã|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ/gi, 'a');
+  slug = slug.replace(/é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ/gi, 'e');
+  slug = slug.replace(/i|í|ì|ỉ|ĩ|ị/gi, 'i');
+  slug = slug.replace(/ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ/gi, 'o');
+  slug = slug.replace(/ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự/gi, 'u');
+  slug = slug.replace(/ý|ỳ|ỷ|ỹ|ỵ/gi, 'y');
+  slug = slug.replace(/đ/gi, 'd');
+  slug = slug.replace(/[^a-z0-9 -]/g, ''); // Xóa ký tự đặc biệt
+  slug = slug.replace(/\s+/g, '-'); // Trắng => Gạch ngang
+  slug = slug.replace(/-+/g, '-'); // Xóa gạch ngang thừa
+  slug = slug.replace(/^-+|-+$/g, ''); // Xóa gạch ngang ở đầu và cuối
+  return slug;
+}
+
+module.exports = { generateSlug, generateBookingCode, seatLockKey, bookingHoldKey, parsePagination };

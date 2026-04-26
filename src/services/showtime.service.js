@@ -56,7 +56,13 @@ const ShowtimeService = {
     const bookedTickets = await BookingTicket.findAll({
       include: [{
         model: Booking,
-        where: { showtime_id: showtimeId, status: ['paid', 'pending'] },
+        where: { 
+          showtime_id: showtimeId, 
+          [Op.or]: [
+            { status: 'paid' },
+            { status: 'pending', hold_expires_at: { [Op.gt]: new Date() } }
+          ]
+        },
         attributes: ['status'],
       }],
     });

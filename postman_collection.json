@@ -1,14 +1,26 @@
 {
   "info": {
     "_postman_id": "be-webxemphim-collection",
-    "name": "BE WebXemPhim API",
+    "name": "BE WebXemPhim API test local",
     "description": "Collection test toàn bộ endpoints hệ thống đặt vé xem phim.\n\n**Hướng dẫn dùng:**\n1. Import file này vào Postman\n2. Tạo Environment với biến `baseUrl` = `http://localhost:3000` (local) hoặc URL Render\n3. Sau khi login, copy `accessToken` và set vào biến `token`\n4. Các request có 🔒 cần token trong header `Authorization: Bearer {{token}}`",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
-    { "key": "baseUrl", "value": "http://localhost:3000", "type": "string" },
-    { "key": "token", "value": "", "type": "string" },
-    { "key": "refreshToken", "value": "", "type": "string" }
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "refreshToken",
+      "value": "",
+      "type": "string"
+    }
   ],
   "item": [
     {
@@ -32,7 +44,12 @@
           "request": {
             "method": "POST",
             "url": "{{baseUrl}}/api/v1/auth/register",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"full_name\": \"Nguyễn Văn A\",\n  \"email\": \"nguyenvana@example.com\",\n  \"password\": \"Password@123\"\n}"
@@ -59,7 +76,12 @@
           "request": {
             "method": "POST",
             "url": "{{baseUrl}}/api/v1/auth/login",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"nguyenvana@example.com\",\n  \"password\": \"Password@123\"\n}"
@@ -87,7 +109,12 @@
           "request": {
             "method": "POST",
             "url": "{{baseUrl}}/api/v1/auth/login",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"admin@cinestar.vn\",\n  \"password\": \"Admin@123\"\n}"
@@ -99,7 +126,12 @@
           "request": {
             "method": "GET",
             "url": "{{baseUrl}}/api/v1/auth/me",
-            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ]
           }
         },
         {
@@ -107,7 +139,12 @@
           "request": {
             "method": "POST",
             "url": "{{baseUrl}}/api/v1/auth/refresh",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"refresh_token\": \"{{refreshToken}}\"\n}"
@@ -119,7 +156,12 @@
           "request": {
             "method": "POST",
             "url": "{{baseUrl}}/api/v1/auth/logout",
-            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ]
           }
         },
         {
@@ -127,7 +169,12 @@
           "request": {
             "method": "POST",
             "url": "{{baseUrl}}/api/v1/auth/forgot-password",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"nguyenvana@example.com\"\n}"
@@ -145,14 +192,38 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/api/v1/movies",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "movies"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "movies"
+              ],
               "query": [
-                { "key": "page", "value": "1" },
-                { "key": "limit", "value": "10" },
-                { "key": "status", "value": "now_showing", "disabled": true },
-                { "key": "search", "value": "Avengers", "disabled": true },
-                { "key": "genre_id", "value": "1", "disabled": true }
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "status",
+                  "value": "now_showing",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "Avengers",
+                  "disabled": true
+                },
+                {
+                  "key": "genre_id",
+                  "value": "1",
+                  "disabled": true
+                }
               ]
             }
           }
@@ -185,10 +256,21 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/api/v1/movies/1/showtimes?date=2026-04-20",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "movies", "1", "showtimes"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "movies",
+                "1",
+                "showtimes"
+              ],
               "query": [
-                { "key": "date", "value": "2026-04-20" }
+                {
+                  "key": "date",
+                  "value": "2026-04-20"
+                }
               ]
             },
             "description": "Filter theo ngày (YYYY-MM-DD)"
@@ -207,8 +289,14 @@
             "method": "POST",
             "url": "{{baseUrl}}/api/v1/movies/1/reviews",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{token}}" },
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -226,6 +314,44 @@
           "request": {
             "method": "GET",
             "url": "{{baseUrl}}/api/v1/genres"
+          }
+        }
+      ]
+    },
+    {
+      "name": "🎭 Directors (Public)",
+      "item": [
+        {
+          "name": "Danh sách đạo diễn",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/directors"
+          }
+        },
+        {
+          "name": "Chi tiết đạo diễn",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/directors/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "🎭 Actors (Public)",
+      "item": [
+        {
+          "name": "Danh sách diễn viên",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/actors"
+          }
+        },
+        {
+          "name": "Chi tiết diễn viên",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/actors/1"
           }
         }
       ]
@@ -259,12 +385,30 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/api/v1/showtimes",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "showtimes"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "showtimes"
+              ],
               "query": [
-                { "key": "movie_id", "value": "1", "disabled": true },
-                { "key": "room_id", "value": "1", "disabled": true },
-                { "key": "date", "value": "2026-04-20", "disabled": true }
+                {
+                  "key": "movie_id",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "room_id",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "date",
+                  "value": "2026-04-20",
+                  "disabled": true
+                }
               ]
             }
           }
@@ -307,8 +451,14 @@
             "method": "POST",
             "url": "{{baseUrl}}/api/v1/bookings/hold",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{token}}" },
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -323,8 +473,14 @@
             "method": "POST",
             "url": "{{baseUrl}}/api/v1/bookings/checkout",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{token}}" },
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -339,14 +495,32 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/api/v1/bookings/my?page=1&limit=10",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "bookings", "my"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "bookings",
+                "my"
+              ],
               "query": [
-                { "key": "page", "value": "1" },
-                { "key": "limit", "value": "10" }
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
               ]
             },
-            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ]
           }
         },
         {
@@ -354,7 +528,12 @@
           "request": {
             "method": "GET",
             "url": "{{baseUrl}}/api/v1/bookings/1",
-            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ]
           }
         },
         {
@@ -362,7 +541,12 @@
           "request": {
             "method": "DELETE",
             "url": "{{baseUrl}}/api/v1/bookings/1/cancel",
-            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ]
           }
         }
       ]
@@ -376,12 +560,29 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/api/v1/payments/vnpay/return?vnp_ResponseCode=00&vnp_TxnRef=CS-ABC123&vnp_SecureHash=xxx",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "payments", "vnpay", "return"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "payments",
+                "vnpay",
+                "return"
+              ],
               "query": [
-                { "key": "vnp_ResponseCode", "value": "00" },
-                { "key": "vnp_TxnRef", "value": "CS-ABC123" },
-                { "key": "vnp_SecureHash", "value": "xxx" }
+                {
+                  "key": "vnp_ResponseCode",
+                  "value": "00"
+                },
+                {
+                  "key": "vnp_TxnRef",
+                  "value": "CS-ABC123"
+                },
+                {
+                  "key": "vnp_SecureHash",
+                  "value": "xxx"
+                }
               ]
             },
             "description": "VNPay redirect user về URL này sau khi thanh toán"
@@ -392,7 +593,12 @@
           "request": {
             "method": "POST",
             "url": "{{baseUrl}}/api/v1/payments/vnpay/ipn",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"vnp_TxnRef\": \"CS-ABC123\",\n  \"vnp_ResponseCode\": \"00\",\n  \"vnp_Amount\": \"15000000\",\n  \"vnp_TransactionNo\": \"14233456\",\n  \"vnp_SecureHash\": \"xxx\"\n}"
@@ -417,7 +623,12 @@
           "request": {
             "method": "POST",
             "url": "{{baseUrl}}/api/v1/promotions/validate",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"code\": \"TET2025\",\n  \"amount\": 150000\n}"
@@ -434,7 +645,12 @@
           "request": {
             "method": "GET",
             "url": "{{baseUrl}}/api/v1/users/me",
-            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ]
           }
         },
         {
@@ -443,8 +659,14 @@
             "method": "PUT",
             "url": "{{baseUrl}}/api/v1/users/me",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{token}}" },
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -458,8 +680,14 @@
             "method": "PUT",
             "url": "{{baseUrl}}/api/v1/users/me/password",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{token}}" },
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -472,7 +700,12 @@
           "request": {
             "method": "GET",
             "url": "{{baseUrl}}/api/v1/users/me/loyalty",
-            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ]
           }
         }
       ]
@@ -485,7 +718,12 @@
           "request": {
             "method": "GET",
             "url": "{{baseUrl}}/api/v1/admin/movies",
-            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ]
           }
         },
         {
@@ -493,20 +731,67 @@
           "request": {
             "method": "POST",
             "url": "{{baseUrl}}/api/v1/admin/movies",
-            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
             "body": {
               "mode": "formdata",
               "formdata": [
-                { "key": "title", "value": "Avengers: Endgame", "type": "text" },
-                { "key": "description", "value": "Siêu anh hùng đối đầu Thanos...", "type": "text" },
-                { "key": "duration", "value": "181", "type": "text" },
-                { "key": "release_date", "value": "2026-05-01", "type": "text" },
-                { "key": "age_rating", "value": "C13", "type": "text" },
-                { "key": "status", "value": "coming_soon", "type": "text" },
-                { "key": "genre_ids", "value": "[1, 5]", "type": "text" },
-                { "key": "director_id", "value": "1", "type": "text" },
-                { "key": "poster", "src": "", "type": "file", "disabled": true },
-                { "key": "backdrop", "src": "", "type": "file", "disabled": true }
+                {
+                  "key": "title",
+                  "value": "Avengers: Endgame",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "Siêu anh hùng đối đầu Thanos...",
+                  "type": "text"
+                },
+                {
+                  "key": "duration",
+                  "value": "181",
+                  "type": "text"
+                },
+                {
+                  "key": "release_date",
+                  "value": "2026-05-01",
+                  "type": "text"
+                },
+                {
+                  "key": "age_rating",
+                  "value": "C13",
+                  "type": "text"
+                },
+                {
+                  "key": "status",
+                  "value": "coming_soon",
+                  "type": "text"
+                },
+                {
+                  "key": "genre_ids",
+                  "value": "[1, 5]",
+                  "type": "text"
+                },
+                {
+                  "key": "director_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "poster",
+                  "src": "",
+                  "type": "file",
+                  "disabled": true
+                },
+                {
+                  "key": "backdrop",
+                  "src": "",
+                  "type": "file",
+                  "disabled": true
+                }
               ]
             }
           }
@@ -516,12 +801,25 @@
           "request": {
             "method": "PUT",
             "url": "{{baseUrl}}/api/v1/admin/movies/1",
-            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
             "body": {
               "mode": "formdata",
               "formdata": [
-                { "key": "status", "value": "now_showing", "type": "text" },
-                { "key": "title", "value": "Avengers: Endgame (Updated)", "type": "text" }
+                {
+                  "key": "status",
+                  "value": "now_showing",
+                  "type": "text"
+                },
+                {
+                  "key": "title",
+                  "value": "Avengers: Endgame (Updated)",
+                  "type": "text"
+                }
               ]
             }
           }
@@ -531,7 +829,198 @@
           "request": {
             "method": "DELETE",
             "url": "{{baseUrl}}/api/v1/admin/movies/1",
-            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "🛠️ ADMIN - Directors",
+      "item": [
+        {
+          "name": "Danh sách đạo diễn",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/admin/directors",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Thêm đạo diễn",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/admin/directors",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Taika Waititi",
+                  "type": "text"
+                },
+                {
+                  "key": "bio",
+                  "value": "Đạo diễn xuất sắc",
+                  "type": "text"
+                },
+                {
+                  "key": "nationality",
+                  "value": "New Zealand",
+                  "type": "text"
+                },
+                {
+                  "key": "avatar",
+                  "src": "",
+                  "type": "file",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Sửa đạo diễn",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v1/admin/directors/1",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Taika Waititi (Update)",
+                  "type": "text"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Xóa đạo diễn",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v1/admin/directors/1",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "🛠️ ADMIN - Actors",
+      "item": [
+        {
+          "name": "Danh sách diễn viên",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/admin/actors",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Thêm diễn viên",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/admin/actors",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Tom Holland",
+                  "type": "text"
+                },
+                {
+                  "key": "bio",
+                  "value": "Người Nhện",
+                  "type": "text"
+                },
+                {
+                  "key": "nationality",
+                  "value": "Anh",
+                  "type": "text"
+                },
+                {
+                  "key": "avatar",
+                  "src": "",
+                  "type": "file",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Sửa diễn viên",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v1/admin/actors/1",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Tom Holland (Update)",
+                  "type": "text"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Xóa diễn viên",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v1/admin/actors/1",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ]
           }
         }
       ]
@@ -544,7 +1033,12 @@
           "request": {
             "method": "GET",
             "url": "{{baseUrl}}/api/v1/admin/rooms",
-            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ]
           }
         },
         {
@@ -553,8 +1047,14 @@
             "method": "POST",
             "url": "{{baseUrl}}/api/v1/admin/rooms",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{token}}" },
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -568,8 +1068,14 @@
             "method": "PUT",
             "url": "{{baseUrl}}/api/v1/admin/rooms/1",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{token}}" },
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -582,7 +1088,12 @@
           "request": {
             "method": "DELETE",
             "url": "{{baseUrl}}/api/v1/admin/rooms/1",
-            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ]
           }
         },
         {
@@ -590,7 +1101,12 @@
           "request": {
             "method": "GET",
             "url": "{{baseUrl}}/api/v1/admin/rooms/1/seats",
-            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ]
           }
         },
         {
@@ -599,8 +1115,14 @@
             "method": "POST",
             "url": "{{baseUrl}}/api/v1/admin/rooms/1/seats/generate",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{token}}" },
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -620,14 +1142,33 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/api/v1/admin/showtimes?date=2026-04-20",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "admin", "showtimes"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "showtimes"
+              ],
               "query": [
-                { "key": "date", "value": "2026-04-20" },
-                { "key": "room_id", "value": "1", "disabled": true }
+                {
+                  "key": "date",
+                  "value": "2026-04-20"
+                },
+                {
+                  "key": "room_id",
+                  "value": "1",
+                  "disabled": true
+                }
               ]
             },
-            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ]
           }
         },
         {
@@ -636,8 +1177,14 @@
             "method": "POST",
             "url": "{{baseUrl}}/api/v1/admin/showtimes",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{token}}" },
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -652,8 +1199,14 @@
             "method": "PUT",
             "url": "{{baseUrl}}/api/v1/admin/showtimes/1",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{token}}" },
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -666,7 +1219,12 @@
           "request": {
             "method": "DELETE",
             "url": "{{baseUrl}}/api/v1/admin/showtimes/1",
-            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ]
           }
         }
       ]
@@ -680,16 +1238,42 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/api/v1/admin/users?page=1&limit=20",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "admin", "users"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "users"
+              ],
               "query": [
-                { "key": "page", "value": "1" },
-                { "key": "limit", "value": "20" },
-                { "key": "search", "value": "", "disabled": true },
-                { "key": "role", "value": "customer", "disabled": true }
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "role",
+                  "value": "customer",
+                  "disabled": true
+                }
               ]
             },
-            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ]
           }
         },
         {
@@ -697,7 +1281,12 @@
           "request": {
             "method": "PUT",
             "url": "{{baseUrl}}/api/v1/admin/users/2/toggle",
-            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ]
           }
         },
         {
@@ -706,8 +1295,14 @@
             "method": "PUT",
             "url": "{{baseUrl}}/api/v1/admin/users/2/role",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{token}}" },
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -725,7 +1320,12 @@
           "request": {
             "method": "GET",
             "url": "{{baseUrl}}/api/v1/admin/combos",
-            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ]
           }
         },
         {
@@ -733,14 +1333,36 @@
           "request": {
             "method": "POST",
             "url": "{{baseUrl}}/api/v1/admin/combos",
-            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
             "body": {
               "mode": "formdata",
               "formdata": [
-                { "key": "name", "value": "Combo Đôi (Bắp + 2 Nước)", "type": "text" },
-                { "key": "description", "value": "1 bắp lớn + 2 nước ngọt 500ml", "type": "text" },
-                { "key": "price", "value": "75000", "type": "text" },
-                { "key": "image", "src": "", "type": "file", "disabled": true }
+                {
+                  "key": "name",
+                  "value": "Combo Đôi (Bắp + 2 Nước)",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "1 bắp lớn + 2 nước ngọt 500ml",
+                  "type": "text"
+                },
+                {
+                  "key": "price",
+                  "value": "75000",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "src": "",
+                  "type": "file",
+                  "disabled": true
+                }
               ]
             }
           }
@@ -750,11 +1372,20 @@
           "request": {
             "method": "PUT",
             "url": "{{baseUrl}}/api/v1/admin/combos/1",
-            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
             "body": {
               "mode": "formdata",
               "formdata": [
-                { "key": "price", "value": "80000", "type": "text" }
+                {
+                  "key": "price",
+                  "value": "80000",
+                  "type": "text"
+                }
               ]
             }
           }
@@ -764,7 +1395,12 @@
           "request": {
             "method": "DELETE",
             "url": "{{baseUrl}}/api/v1/admin/combos/1",
-            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ]
           }
         }
       ]
@@ -777,7 +1413,12 @@
           "request": {
             "method": "GET",
             "url": "{{baseUrl}}/api/v1/admin/promotions",
-            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ]
           }
         },
         {
@@ -786,8 +1427,14 @@
             "method": "POST",
             "url": "{{baseUrl}}/api/v1/admin/promotions",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{token}}" },
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -801,8 +1448,14 @@
             "method": "POST",
             "url": "{{baseUrl}}/api/v1/admin/promotions/1/vouchers",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{token}}" },
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -816,7 +1469,12 @@
           "request": {
             "method": "DELETE",
             "url": "{{baseUrl}}/api/v1/admin/promotions/1",
-            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ]
           }
         }
       ]
@@ -829,7 +1487,12 @@
           "request": {
             "method": "GET",
             "url": "{{baseUrl}}/api/v1/admin/dashboard/stats",
-            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ]
           }
         },
         {
@@ -838,14 +1501,33 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/api/v1/admin/dashboard/revenue?from=2026-04-01&to=2026-04-30",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "admin", "dashboard", "revenue"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "dashboard",
+                "revenue"
+              ],
               "query": [
-                { "key": "from", "value": "2026-04-01" },
-                { "key": "to", "value": "2026-04-30" }
+                {
+                  "key": "from",
+                  "value": "2026-04-01"
+                },
+                {
+                  "key": "to",
+                  "value": "2026-04-30"
+                }
               ]
             },
-            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ]
           }
         }
       ]

@@ -15,15 +15,28 @@ function createVnpaySignature(params, hashSecret) {
     .sort()
     .reduce((acc, k) => { acc[k] = params[k]; return acc; }, {});
 
-  const signData = qs.stringify(sortedParams, { encode: false });
+  const signData = qs.stringify(sortedParams);
   return crypto.createHmac('sha512', hashSecret).update(signData).digest('hex');
+}
+
+/**
+ * Format chuỗi thời gian YYYYMMDDHHmmss theo chuẩn GMT+7 (VN Time) cho VNPay
+ */
+function formatVnTime(date) {
+  const d = new Date(date.getTime() + 7 * 60 * 60 * 1000); // Ép về múi giờ VN (+7)
+  return d.getUTCFullYear().toString() +
+    (d.getUTCMonth() + 1).toString().padStart(2, '0') +
+    d.getUTCDate().toString().padStart(2, '0') +
+    d.getUTCHours().toString().padStart(2, '0') +
+    d.getUTCMinutes().toString().padStart(2, '0') +
+    d.getUTCSeconds().toString().padStart(2, '0');
 }
 
 const PaymentService = {
   async createVnpayUrl({ bookingCode, amount, orderInfo, ipAddr }) {
     const date = new Date();
-    const createDate = date.toISOString().replace(/[-T:.Z]/g, '').slice(0, 14);
-    const expireDate = new Date(date.getTime() + 15 * 60 * 1000).toISOString().replace(/[-T:.Z]/g, '').slice(0, 14);
+    const createDate = formatVnTime(date);
+    const expireDate = formatVnTime(new Date(date.getTime() + 15 * 60 * 1000));
 
     const params = {
       vnp_Version: '2.1.0',
@@ -44,17 +57,26 @@ const PaymentService = {
     const secureHash = createVnpaySignature(params, process.env.VNPAY_HASH_SECRET);
     params.vnp_SecureHash = secureHash;
 
-    return `${process.env.VNPAY_URL}?${qs.stringify(params, { encode: false })}`;
+    const queryStr = qs.stringify(params);
+    return `${process.env.VNPAY_URL}?${queryStr}`;
   },
 
   /**
    * Xử lý VNPay Return (redirect từ trình duyệt)
    */
   async handleVnpayReturn(query) {
-    const { vnp_SecureHash, vnp_TxnRef, vnp_ResponseCode, ...rest } = query;
-    const expectedHash = createVnpaySignature(rest, process.env.VNPAY_HASH_SECRET);
+    const vnp_SecureHash = query.vnp_SecureHash;
+    const vnp_TxnRef = query.vnp_TxnRef;
+    const vnp_ResponseCode = query.vnp_ResponseCode;
 
-    if (expectedHash !== vnp_SecureHash) {
+    const signDataObj = { ...query };
+    delete signDataObj.vnp_SecureHash;
+    delete signDataObj.vnp_SecureHashType;
+
+    const expectedHash = createVnpaySignature(signDataObj, process.env.VNPAY_HASH_SECRET);
+
+    // Bỏ qua phân biệt hoa thường khi so sánh Hash vì Nodejs thường xuất chữ thường còn VNPAY có thể gửi lại chữ hoa
+    if (expectedHash.toLowerCase() !== String(vnp_SecureHash).toLowerCase()) {
       logger.warn('VNPay return: invalid signature');
       return { success: false, bookingCode: vnp_TxnRef };
     }
@@ -71,10 +93,19 @@ const PaymentService = {
    * ĐÂY là nơi chính thức cập nhật trạng thái thanh toán vào DB
    */
   async handleVnpayIpn(query) {
-    const { vnp_SecureHash, vnp_TxnRef, vnp_ResponseCode, vnp_Amount, vnp_TransactionNo, ...rest } = query;
-    const expectedHash = createVnpaySignature(rest, process.env.VNPAY_HASH_SECRET);
+    const vnp_SecureHash = query.vnp_SecureHash;
+    const vnp_TxnRef = query.vnp_TxnRef;
+    const vnp_ResponseCode = query.vnp_ResponseCode;
+    const vnp_Amount = query.vnp_Amount;
+    const vnp_TransactionNo = query.vnp_TransactionNo;
 
-    if (expectedHash !== vnp_SecureHash) throw new AppError('Invalid VNPay signature', 400);
+    const signDataObj = { ...query };
+    delete signDataObj.vnp_SecureHash;
+    delete signDataObj.vnp_SecureHashType;
+
+    const expectedHash = createVnpaySignature(signDataObj, process.env.VNPAY_HASH_SECRET);
+
+    if (expectedHash.toLowerCase() !== String(vnp_SecureHash).toLowerCase()) throw new AppError('Invalid VNPay signature', 400);
 
     const booking = await Booking.findOne({
       where: { booking_code: vnp_TxnRef },
