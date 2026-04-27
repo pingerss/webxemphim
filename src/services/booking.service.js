@@ -48,6 +48,13 @@ const BookingService = {
       const showtime = await Showtime.findByPk(showtime_id, { transaction: t });
       if (!showtime || !showtime.is_active) throw new AppError('Suất chiếu không tồn tại hoặc đã đóng', 400);
 
+      // Kiểm tra thời gian chiếu
+      const currentTime = new Date();
+      // Nếu đã đến giờ chiếu hoặc trễ hơn, không cho đặt vé online
+      if (currentTime >= showtime.start_time) {
+        throw new AppError('Suất chiếu đã bắt đầu, không thể đặt vé online', 400);
+      }
+
       let subtotal = 0;
       const ticketData = seats.map(seat => {
         const seatPrice = Math.round(showtime.base_price * (seat.price_multiplier || 1));
