@@ -104,6 +104,13 @@ const MovieService = {
   async create(payload) {
     const { genre_ids, actor_ids, ...movieData } = payload;
 
+    if (movieData.title) {
+      const existingMovie = await Movie.findOne({ where: { title: movieData.title } });
+      if (existingMovie) {
+        throw new AppError('Tên phim đã tồn tại trong hệ thống', 400);
+      }
+    }
+
     // Tự động tạo slug nếu rỗng
     if (!movieData.slug && movieData.title) {
       movieData.slug = generateSlug(movieData.title) + '-' + Date.now().toString().slice(-4);
