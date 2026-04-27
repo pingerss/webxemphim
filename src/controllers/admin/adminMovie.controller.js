@@ -31,12 +31,14 @@ const AdminMovieController = {
         try { payload.actor_ids = JSON.parse(payload.actor_ids); } catch (e) {}
       }
 
-      if (req.files?.poster?.[0]) {
-        const r = await uploadToCloudinary(req.files.poster[0].buffer, 'movies/posters');
+      const posterFile = req.files?.poster?.[0] || req.files?.poster_url?.[0];
+      if (posterFile) {
+        const r = await uploadToCloudinary(posterFile.buffer, 'movies/posters');
         payload.poster_url = r.secure_url;
       }
-      if (req.files?.backdrop?.[0]) {
-        const r = await uploadToCloudinary(req.files.backdrop[0].buffer, 'movies/backdrops');
+      const backdropFile = req.files?.backdrop?.[0] || req.files?.backdrop_url?.[0];
+      if (backdropFile) {
+        const r = await uploadToCloudinary(backdropFile.buffer, 'movies/backdrops');
         payload.backdrop_url = r.secure_url;
       }
       const movie = await MovieService.create(payload);
@@ -55,12 +57,14 @@ const AdminMovieController = {
         try { payload.actor_ids = JSON.parse(payload.actor_ids); } catch (e) {}
       }
 
-      if (req.files?.poster?.[0]) {
-        const r = await uploadToCloudinary(req.files.poster[0].buffer, 'movies/posters');
+      const posterFile = req.files?.poster?.[0] || req.files?.poster_url?.[0];
+      if (posterFile) {
+        const r = await uploadToCloudinary(posterFile.buffer, 'movies/posters');
         payload.poster_url = r.secure_url;
       }
-      if (req.files?.backdrop?.[0]) {
-        const r = await uploadToCloudinary(req.files.backdrop[0].buffer, 'movies/backdrops');
+      const backdropFile = req.files?.backdrop?.[0] || req.files?.backdrop_url?.[0];
+      if (backdropFile) {
+        const r = await uploadToCloudinary(backdropFile.buffer, 'movies/backdrops');
         payload.backdrop_url = r.secure_url;
       }
       const movie = await MovieService.update(req.params.id, payload);

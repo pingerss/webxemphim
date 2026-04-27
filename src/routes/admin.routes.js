@@ -11,8 +11,8 @@ router.use(authenticate, authorize('admin'));
 const AdminMovieController = require('../controllers/admin/adminMovie.controller');
 router.get('/movies',              AdminMovieController.getAll);
 router.get('/movies/:id',          AdminMovieController.getById);
-router.post('/movies',             upload.fields([{ name: 'poster', maxCount: 1 }, { name: 'backdrop', maxCount: 1 }]), AdminMovieController.create);
-router.put('/movies/:id',          upload.fields([{ name: 'poster', maxCount: 1 }, { name: 'backdrop', maxCount: 1 }]), AdminMovieController.update);
+router.post('/movies',             upload.fields([{ name: 'poster', maxCount: 1 }, { name: 'backdrop', maxCount: 1 }, { name: 'poster_url', maxCount: 1 }, { name: 'backdrop_url', maxCount: 1 }]), AdminMovieController.create);
+router.put('/movies/:id',          upload.fields([{ name: 'poster', maxCount: 1 }, { name: 'backdrop', maxCount: 1 }, { name: 'poster_url', maxCount: 1 }, { name: 'backdrop_url', maxCount: 1 }]), AdminMovieController.update);
 router.delete('/movies/:id',       AdminMovieController.remove);
 
 // Directors
