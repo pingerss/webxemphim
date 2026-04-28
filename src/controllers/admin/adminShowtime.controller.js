@@ -5,7 +5,7 @@ const ApiResponse = require('../../utils/apiResponse.util');
 
 const AdminShowtimeController = {
   async getAll(req, res, next) {
-    try { return ApiResponse.success(res, await ShowtimeService.getAll(req.query)); }
+    try { return ApiResponse.success(res, await ShowtimeService.getAll({ ...req.query, is_admin: true })); }
     catch (err) { next(err); }
   },
   /**

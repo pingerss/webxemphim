@@ -115,6 +115,16 @@ const PaymentService = {
 
     logger.info(`[VNPay Return] TxnRef=${vnp_TxnRef}, ResponseCode=${vnp_ResponseCode}, isVerified=${isVerified}`);
 
+    // WORKAROUND CHO LOCALHOST: 
+    // Vì VNPay không thể gọi IPN webhook về localhost, ta gọi luôn logic cập nhật DB ở Return URL
+    if (isVerified && process.env.NODE_ENV !== 'production') {
+      try {
+        await this.handleVnpayIpn(query);
+      } catch (error) {
+        logger.error(`[VNPay Return Workaround] Lỗi cập nhật IPN nội bộ: ${error.message}`);
+      }
+    }
+
     const booking = await Booking.findOne({ where: { booking_code: vnp_TxnRef } });
     if (!booking) return { success: false, bookingCode: vnp_TxnRef };
 

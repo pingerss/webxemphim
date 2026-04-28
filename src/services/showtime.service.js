@@ -7,15 +7,27 @@ const { seatLockKey } = require('../utils/helpers.util');
 const AppError = require('../utils/AppError');
 
 const ShowtimeService = {
-  // Filter: movie_id, room_id, date
-  async getAll({ movie_id, room_id, date }) {
+  // Filter: movie_id, room_id, date, is_admin
+  async getAll({ movie_id, room_id, date, is_admin }) {
     const where = { is_active: true };
     if (movie_id) where.movie_id = movie_id;
     if (room_id) where.room_id = room_id;
-    if (date) {
-      const d = new Date(date);
-      const next = new Date(d); next.setDate(next.getDate() + 1);
-      where.start_time = { [Op.gte]: d, [Op.lt]: next };
+    
+    if (is_admin) {
+      if (date) {
+        const d = new Date(date);
+        const next = new Date(d); next.setDate(next.getDate() + 1);
+        where.start_time = { [Op.gte]: d, [Op.lt]: next };
+      }
+    } else {
+      const now = new Date();
+      if (date) {
+        const d = new Date(date);
+        const next = new Date(d); next.setDate(next.getDate() + 1);
+        where.start_time = { [Op.gte]: now > d ? now : d, [Op.lt]: next };
+      } else {
+        where.start_time = { [Op.gte]: now };
+      }
     }
 
     return Showtime.findAll({

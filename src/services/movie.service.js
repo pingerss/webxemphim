@@ -52,11 +52,18 @@ const MovieService = {
   // Lấy lịch chiếu của phim, có thể filter theo ngày
   async getShowtimes(movieId, { date }) {
     const where = { movie_id: movieId, is_active: true };
+    const now = new Date();
+
     if (date) {
       const d = new Date(date);
       const nextDay = new Date(d);
       nextDay.setDate(nextDay.getDate() + 1);
-      where.start_time = { [Op.gte]: d, [Op.lt]: nextDay };
+      where.start_time = { 
+        [Op.gte]: now > d ? now : d, 
+        [Op.lt]: nextDay 
+      };
+    } else {
+      where.start_time = { [Op.gte]: now };
     }
     return Showtime.findAll({
       where,
